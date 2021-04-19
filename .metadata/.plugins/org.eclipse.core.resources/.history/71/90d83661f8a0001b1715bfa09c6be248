@@ -1,0 +1,36 @@
+package org.eclipse.scout.contacts.client.common;
+
+@FormData(value = AbstractUrlImageFieldData.class, 
+sdkCommand = SdkCommand.CREATE,
+defaultSubtypeSdkCommand = DefaultSubtypeSdkCommand.CREATE)
+public abstract class AbstractUrlImageField extends AbstractImageField {
+private String url; 
+@FormData 
+public String getUrl() {
+return url;
+}
+@FormData 
+public void setUrl(String url) {
+this.url = url;
+updateImage();
+}
+@Override
+protected boolean getConfiguredLabelVisible() {
+return false;
+}
+@Override
+protected int getConfiguredGridH() {
+return 5;
+}
+@Override
+protected boolean getConfiguredAutoFit() {
+return true;
+}
+@Override
+protected String getConfiguredImageId() {
+return Icons.User;
+}
+protected void updateImage() {
+setImageUrl(this.url);
+}
+}

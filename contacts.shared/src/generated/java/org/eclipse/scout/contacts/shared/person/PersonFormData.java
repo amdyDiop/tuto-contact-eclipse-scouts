@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.annotation.Generated;
 
+import org.eclipse.scout.contacts.shared.common.AbstractUrlImageFieldData;
 import org.eclipse.scout.rt.platform.classid.ClassId;
 import org.eclipse.scout.rt.shared.data.form.AbstractFormData;
 import org.eclipse.scout.rt.shared.data.form.fields.AbstractValueFieldData;
@@ -89,6 +90,10 @@ public class PersonFormData extends AbstractFormData {
 		return getFieldByClass(PhoneWork.class);
 	}
 
+	public Picture getPicture() {
+		return getFieldByClass(Picture.class);
+	}
+
 	public PictureUrl getPictureUrl() {
 		return getFieldByClass(PictureUrl.class);
 	}
@@ -156,6 +161,10 @@ public class PersonFormData extends AbstractFormData {
 	}
 
 	public static class PhoneWork extends AbstractValueFieldData<String> {
+		private static final long serialVersionUID = 1L;
+	}
+
+	public static class Picture extends AbstractUrlImageFieldData {
 		private static final long serialVersionUID = 1L;
 	}
 

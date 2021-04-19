@@ -9,6 +9,10 @@
  *     BSI Business Systems Integration AG - initial API and implementation
  */
 package org.eclipse.scout.contacts.client.person;
+
+import java.util.regex.Pattern;
+
+import org.eclipse.scout.contacts.client.common.AbstractUrlImageField;
 import org.eclipse.scout.contacts.client.common.CountryLookupCall;
 import org.eclipse.scout.contacts.client.person.PersonForm.MainBox.CancelButton;
 import org.eclipse.scout.contacts.client.person.PersonForm.MainBox.DetailsBox;
@@ -34,12 +38,12 @@ import org.eclipse.scout.contacts.client.person.PersonForm.MainBox.GeneralBox.La
 import org.eclipse.scout.contacts.client.person.PersonForm.MainBox.GeneralBox.PictureField;
 import org.eclipse.scout.contacts.client.person.PersonForm.MainBox.GeneralBox.PictureUrlField;
 import org.eclipse.scout.contacts.client.person.PersonForm.MainBox.OkButton;
-import org.eclipse.scout.contacts.shared.Icons;
 import org.eclipse.scout.contacts.shared.person.GenderCodeType;
 import org.eclipse.scout.contacts.shared.person.IPersonService;
 import org.eclipse.scout.contacts.shared.person.PersonFormData;
 import org.eclipse.scout.rt.client.dto.FormData;
 import org.eclipse.scout.rt.client.dto.FormData.SdkCommand;
+import org.eclipse.scout.rt.client.ui.action.menu.AbstractMenu;
 import org.eclipse.scout.rt.client.ui.form.AbstractForm;
 import org.eclipse.scout.rt.client.ui.form.AbstractFormHandler;
 import org.eclipse.scout.rt.client.ui.form.IForm;
@@ -47,7 +51,6 @@ import org.eclipse.scout.rt.client.ui.form.fields.button.AbstractCancelButton;
 import org.eclipse.scout.rt.client.ui.form.fields.button.AbstractOkButton;
 import org.eclipse.scout.rt.client.ui.form.fields.datefield.AbstractDateField;
 import org.eclipse.scout.rt.client.ui.form.fields.groupbox.AbstractGroupBox;
-import org.eclipse.scout.rt.client.ui.form.fields.imagefield.AbstractImageField;
 import org.eclipse.scout.rt.client.ui.form.fields.radiobuttongroup.AbstractRadioButtonGroup;
 import org.eclipse.scout.rt.client.ui.form.fields.sequencebox.AbstractSequenceBox;
 import org.eclipse.scout.rt.client.ui.form.fields.smartfield.AbstractSmartField;
@@ -56,6 +59,7 @@ import org.eclipse.scout.rt.client.ui.form.fields.tabbox.AbstractTabBox;
 import org.eclipse.scout.rt.platform.BEANS;
 import org.eclipse.scout.rt.platform.Order;
 import org.eclipse.scout.rt.platform.classid.ClassId;
+import org.eclipse.scout.rt.platform.exception.VetoException;
 import org.eclipse.scout.rt.platform.text.TEXTS;
 import org.eclipse.scout.rt.platform.util.StringUtility;
 import org.eclipse.scout.rt.shared.services.common.code.ICodeType;
@@ -64,11 +68,9 @@ import org.eclipse.scout.rt.shared.services.lookup.ILookupCall;
 // tag::init[]
 @ClassId("1cde38c1-da32-4fdd-92e7-28d82a5d7bf9")
 @FormData(value = PersonFormData.class, sdkCommand = SdkCommand.CREATE) // <1>
-// tag::structure[]
-// tag::validate[]
+
 public class PersonForm extends AbstractForm {
 
-	
 	// represents the person's primary key
 	private String personId;
 
@@ -96,7 +98,7 @@ public class PersonForm extends AbstractForm {
 	protected String getConfiguredTitle() {
 		return TEXTS.get("Person");
 	}
-	
+
 	public AddressBox getAddressBox() {
 		return getFieldByClass(AddressBox.class);
 	}
@@ -189,107 +191,83 @@ public class PersonForm extends AbstractForm {
 		return getFieldByClass(WorkBox.class);
 	}
 
-	// tag::layout[]
 	@Order(10)
 	@ClassId("27a040ac-eac5-47c6-a826-572633b9d4ef")
 	public class MainBox extends AbstractGroupBox { // <1>
-		
+
 		@Order(10)
 		@ClassId("08832a97-8845-4ff4-8dfd-c29366c22742")
 		public class GeneralBox extends AbstractGroupBox { // <2>
-			 @Order(10)
-		     @ClassId("617ffd40-0d69-4d02-b4f8-90c28c68c6ce")
-		     public class PictureUrlField extends AbstractStringField {
-		       @Override
-		       protected boolean getConfiguredVisible() {
-		         return false;
-		       }
-		     }
-			 
-		      @Order(20)
-		      @ClassId("6366a23e-f8ba-4b50-b814-202e63daffc8")
-		      public class PictureField extends AbstractImageField {
-		        @Override 
-		        protected Class<PictureUrlField> getConfiguredMasterField() {
-		          return PictureUrlField.class;
-		        }
-		        @Override 
-		        protected void execChangedMasterValue(Object newMasterValue) {
-		          updateImage((String) newMasterValue);
-		        }
-		        @Override
-		        protected boolean getConfiguredLabelVisible() {
-		          return false;
-		        }
-		        @Override
-		        protected int getConfiguredGridH() {
-		          return 5;
-		        }
-		        @Override
-		        protected boolean getConfiguredAutoFit() {
-		          return true;
-		        }
-		        @Override
-		        protected String getConfiguredImageId() {
-		          return Icons.User;
-		        }
-		        protected void updateImage(String url) {
-		          setImageUrl(url);
-		        }
-		      }
-		      @Order(30)
-		      @ClassId("359be835-439f-456e-9b0d-c832b034a298")
-		      public class FirstNameField extends AbstractStringField {
-		        @Override
-		        protected String getConfiguredLabel() {
-		          return TEXTS.get("FirstName");
-		        }
-		      }
-		      @Order(40)
-		      public class LastNameField extends AbstractStringField {
-		        @Override
-		        protected String getConfiguredLabel() {
-		          return TEXTS.get("LastName");
-		        }
-		      }
-		      @Order(50)
-		      public class DateOfBirthField extends AbstractDateField {
-		        @Override
-		        protected String getConfiguredLabel() {
-		          return TEXTS.get("DateOfBirth");
-		        }
-		      }
-		      @Order(60)
-		      public class GenderGroup extends AbstractRadioButtonGroup<String> {
-		        @Override
-		        protected String getConfiguredLabel() {
-		          return TEXTS.get("Gender");
-		        }
-		        @Override 
-		        protected Class<? extends ICodeType<?, String>> getConfiguredCodeType() {
-		          return GenderCodeType.class;
-		        }
-		      }
+			@Order(10)
+			@ClassId("617ffd40-0d69-4d02-b4f8-90c28c68c6ce")
+			public class PictureUrlField extends AbstractStringField {
+				@Override
+				protected boolean getConfiguredVisible() {
+					return false;
+				}
+			}
 
+			@Order(20)
+			public class PictureField extends AbstractUrlImageField {
+
+			}
+
+			@Order(30)
+			@ClassId("359be835-439f-456e-9b0d-c832b034a298")
+			public class FirstNameField extends AbstractStringField {
+				@Override
+				protected String getConfiguredLabel() {
+					return TEXTS.get("FirstName");
+				}
+			}
+
+			@Order(40)
+			public class LastNameField extends AbstractStringField {
+				@Override
+				protected String getConfiguredLabel() {
+					return TEXTS.get("LastName");
+				}
+			}
+
+			@Order(50)
+			public class DateOfBirthField extends AbstractDateField {
+				@Override
+				protected String getConfiguredLabel() {
+					return TEXTS.get("DateOfBirth");
+				}
+			}
+
+			@Order(60)
+			public class GenderGroup extends AbstractRadioButtonGroup<String> {
+				@Override
+				protected String getConfiguredLabel() {
+					return TEXTS.get("Gender");
+				}
+
+				@Override
+				protected Class<? extends ICodeType<?, String>> getConfiguredCodeType() {
+					return GenderCodeType.class;
+				}
+			}
 
 		}
 
 		@Order(20)
-		public class DetailsBox extends AbstractTabBox { 
+		public class DetailsBox extends AbstractTabBox {
 
 			@Order(10)
 			public class ContactInfoBox extends AbstractGroupBox {
 
-			
 				@Override
 				protected String getConfiguredLabel() {
 					return TEXTS.get("ContactInfo");
 				}
 
-				
 				@Order(10)
 				public class AddressBox extends AbstractGroupBox {
-				
+					protected void execChangedValue() {
+						validateAddressFields();
+					}
 
 					@Override
 					protected boolean getConfiguredBorderVisible() {
@@ -328,25 +306,18 @@ public class PersonForm extends AbstractForm {
 						return getFieldByClass(CountryField.class);
 					}
 
-					
-					// tag::validateAddress[]
-
-					// tag::addressBox[]
 					@Order(10)
 					@ClassId("a9137ad1-af9d-4fef-a69d-3e3d9ce48f21")
 					public class StreetField extends AbstractStringField {
-						// end::validateAddress[]
 
 						@Override
 						protected String getConfiguredLabel() {
 							return TEXTS.get("Street");
 						}
-						// end::addressBox[]
-						// tag::validateAddress[]
 
 						@Override // <1>
 						protected void execChangedValue() {
-							validateAddressFields(); // <2>
+							validateAddressFields();
 						}
 					}
 
@@ -375,10 +346,11 @@ public class PersonForm extends AbstractForm {
 							protected byte getConfiguredLabelPosition() {
 								return LABEL_POSITION_ON_FIELD; // <5>
 							}
-							
+
+							// validation des champs adress aprés changement city
 							@Override
 							protected void execChangedValue() {
-								validateAddressFields(); // <2>
+								validateAddressFields();
 							}
 						}
 
@@ -388,13 +360,13 @@ public class PersonForm extends AbstractForm {
 							protected String getConfiguredLabel() {
 								return TEXTS.get("Country");
 							}
-							
+
+							// validation des champs address aprés changement city
 
 							@Override
 							protected void execChangedValue() {
-								validateAddressFields(); // <2>
+								validateAddressFields(); //
 							}
-					
 
 							@Override
 							protected byte getConfiguredLabelPosition() {
@@ -408,17 +380,15 @@ public class PersonForm extends AbstractForm {
 							// tag::validateAddress[]
 						}
 					}
-		
+
 					protected void validateAddressFields() {
 						boolean hasStreet = StringUtility.hasText(getStreetField().getValue());
 						boolean hasCity = StringUtility.hasText(getCityField().getValue());
-
-						getCityField().setMandatory(hasStreet); // <3>
+						getCityField().setMandatory(hasStreet); // city obligatoir si street n'est pas vide
 						getCountryField().setMandatory(hasStreet || hasCity);
 					}
-				
+
 				}
-				
 
 				@Order(20)
 				@ClassId("136a3c0c-91bf-427c-8020-507bfd391098")
@@ -439,11 +409,11 @@ public class PersonForm extends AbstractForm {
 					}
 				}
 
-				// tag::email[]
 				@Order(40)
 				public class EmailField extends AbstractStringField {
 
-				
+					private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+							+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
 					@Override
 					protected String getConfiguredLabel() {
@@ -455,13 +425,20 @@ public class PersonForm extends AbstractForm {
 						return 64;
 					}
 
+					@Override
+					protected String execValidateValue(String rawValue) {
+						if (rawValue != null && !Pattern.matches(EMAIL_PATTERN, rawValue)) {
+							throw new VetoException(TEXTS.get("BadEmailAddress"));
+						}
+						return rawValue;
+					}
+
 				}
-				
+
 			}
 
 			@Order(20)
 			public class WorkBox extends AbstractGroupBox {
-				
 
 				@Override
 				protected String getConfiguredLabel() {
@@ -485,7 +462,6 @@ public class PersonForm extends AbstractForm {
 						return TEXTS.get("Organization");
 					}
 
-				
 				}
 
 				@Order(30)
@@ -505,9 +481,9 @@ public class PersonForm extends AbstractForm {
 						return TEXTS.get("Email");
 					}
 				}
-				
+
 			}
-			
+
 			@Order(30)
 			public class NotesBox extends AbstractGroupBox {
 
@@ -545,49 +521,48 @@ public class PersonForm extends AbstractForm {
 		public class CancelButton extends AbstractCancelButton {
 		}
 	}
-	
+
 	public void startModify() {
 		startInternalExclusive(new ModifyHandler());
 	}
+
 	public void startNew() {
 		startInternal(new NewHandler());
 	}
 
 	public class ModifyHandler extends AbstractFormHandler {
-	    @Override
-	    protected void execLoad() {
-	    	IPersonService service = BEANS.get(IPersonService.class); 
-	        PersonFormData formData = new PersonFormData();
-	        exportFormData(formData); 
-	        formData = service.load(formData); 
-	        importFormData(formData); 
-	        getForm().setSubTitle(calculateSubTitle()); 
-	    }
-	    @Override
-	    protected void execStore() {
-	    	IPersonService service = BEANS.get(IPersonService.class);
-	        PersonFormData formData = new PersonFormData();
-	        exportFormData(formData);
-	        service.store(formData);
-	    }
-	  }
+		@Override
+		protected void execLoad() {
+			IPersonService service = BEANS.get(IPersonService.class);
+			PersonFormData formData = new PersonFormData();
+			exportFormData(formData);
+			formData = service.load(formData);
+			importFormData(formData);
+			getForm().setSubTitle(calculateSubTitle());
+		}
+
+		@Override
+		protected void execStore() {
+			IPersonService service = BEANS.get(IPersonService.class);
+			PersonFormData formData = new PersonFormData();
+			exportFormData(formData);
+			service.store(formData);
+		}
+	}
 
 	public class NewHandler extends AbstractFormHandler {
-	    @Override
-	    protected void execStore() {
-	      IPersonService service = BEANS.get(IPersonService.class);
-	      PersonFormData formData = new PersonFormData();
-	      exportFormData(formData);
-	      formData = service.create(formData); 
-	      importFormData(formData);
-	    }
-	  }
-	  protected String calculateSubTitle() {
-	    return StringUtility.join(" ",
-	        getFirstNameField().getValue(),
-	        getLastNameField().getValue());
-	  }
-	
-	
-}
+		@Override
+		protected void execStore() {
+			IPersonService service = BEANS.get(IPersonService.class);
+			PersonFormData formData = new PersonFormData();
+			exportFormData(formData);
+			formData = service.create(formData);
+			importFormData(formData);
+		}
+	}
 
+	protected String calculateSubTitle() {
+		return StringUtility.join(" ", getFirstNameField().getValue(), getLastNameField().getValue());
+	}
+
+}
