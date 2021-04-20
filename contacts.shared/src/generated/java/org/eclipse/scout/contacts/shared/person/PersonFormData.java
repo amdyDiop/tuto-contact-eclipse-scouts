@@ -138,6 +138,7 @@ public class PersonFormData extends AbstractFormData {
 		private static final long serialVersionUID = 1L;
 	}
 
+	@ClassId("cd4a7afd-e0ac-4c79-bf2e-819aa491db27-formdata")
 	public static class Organization extends AbstractValueFieldData<String> {
 		private static final long serialVersionUID = 1L;
 	}

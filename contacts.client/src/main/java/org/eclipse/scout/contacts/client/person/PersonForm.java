@@ -35,6 +35,7 @@ import org.eclipse.scout.contacts.client.person.PersonForm.MainBox.GeneralBox.La
 import org.eclipse.scout.contacts.client.person.PersonForm.MainBox.GeneralBox.PictureField;
 import org.eclipse.scout.contacts.client.person.PersonForm.MainBox.GeneralBox.PictureUrlField;
 import org.eclipse.scout.contacts.client.person.PersonForm.MainBox.OkButton;
+import org.eclipse.scout.contacts.shared.organization.OrganizationLookupCall;
 import org.eclipse.scout.contacts.shared.person.GenderCodeType;
 import org.eclipse.scout.contacts.shared.person.IPersonService;
 import org.eclipse.scout.contacts.shared.person.PersonFormData;
@@ -57,8 +58,8 @@ import org.eclipse.scout.rt.platform.classid.ClassId;
 import org.eclipse.scout.rt.platform.text.TEXTS;
 import org.eclipse.scout.rt.platform.util.StringUtility;
 import org.eclipse.scout.rt.shared.services.common.code.ICodeType;
+import org.eclipse.scout.rt.shared.services.lookup.ILookupCall;
 
-// tag::init[]
 @ClassId("1cde38c1-da32-4fdd-92e7-28d82a5d7bf9")
 @FormData(value = PersonFormData.class, sdkCommand = SdkCommand.CREATE) // <1>
 
@@ -301,13 +302,17 @@ public class PersonForm extends AbstractForm {
 				}
 
 				@Order(20)
-				public class OrganizationField extends AbstractSmartField<String> { // <1>
-
+				@ClassId("cd4a7afd-e0ac-4c79-bf2e-819aa491db27")
+				public class OrganizationField extends AbstractSmartField<String> {
 					@Override
 					protected String getConfiguredLabel() {
 						return TEXTS.get("Organization");
 					}
 
+					@Override
+					protected Class<? extends ILookupCall<String>> getConfiguredLookupCall() {
+						return OrganizationLookupCall.class;
+					}
 				}
 
 				@Order(30)

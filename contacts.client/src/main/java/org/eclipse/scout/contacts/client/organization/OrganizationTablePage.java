@@ -6,9 +6,11 @@ import org.eclipse.scout.contacts.shared.organization.IOrganizationService;
 import org.eclipse.scout.contacts.shared.organization.OrganizationTablePageData;
 import org.eclipse.scout.rt.client.dto.Data;
 import org.eclipse.scout.rt.client.ui.basic.table.AbstractTable;
+import org.eclipse.scout.rt.client.ui.basic.table.ITableRow;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractSmartColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractStringColumn;
 import org.eclipse.scout.rt.client.ui.desktop.outline.pages.AbstractPageWithTable;
+import org.eclipse.scout.rt.client.ui.desktop.outline.pages.IPage;
 import org.eclipse.scout.rt.platform.BEANS;
 import org.eclipse.scout.rt.platform.Order;
 import org.eclipse.scout.rt.platform.text.TEXTS;
@@ -17,6 +19,14 @@ import org.eclipse.scout.rt.shared.services.lookup.ILookupCall;
 
 @Data(OrganizationTablePageData.class)
 public class OrganizationTablePage extends AbstractPageWithTable<Table> {
+
+	@Override
+	protected IPage<?> execCreateChildPage(ITableRow row) {
+		OrganizationNodePage childPage = new OrganizationNodePage();
+		childPage.setOrganizationId(getTable().getOrganizationIdColumn().getValue(row));
+		return childPage;
+	}
+
 	@Override
 	protected void execLoadData(SearchFilter filter) {
 		importPageData(BEANS.get(IOrganizationService.class).getOrganizationTableData(filter));
@@ -32,7 +42,7 @@ public class OrganizationTablePage extends AbstractPageWithTable<Table> {
 
 //-------------------------------------GETTERS-----------------------------------------
 
-		public OrganizationIdColumn getOrganisationIdColumn() {
+		public OrganizationIdColumn getOrganizationIdColumn() {
 			return getColumnSet().getColumnByClass(OrganizationIdColumn.class);
 		}
 

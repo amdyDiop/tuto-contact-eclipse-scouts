@@ -24,15 +24,23 @@ public interface SQLs {
 			+ "          phone VARCHAR(20), " + "          email VARCHAR(64), " + "          notes VARCHAR(1024)"
 			+ "         )";
 
-	String PERSON_CREATE_TABLE = "" + "CREATE   TABLE PERSON "
+	String PERSON_CREATE_TABLE = "" 
+	+ "CREATE   TABLE PERSON "
 			+ "         (person_id VARCHAR(64) NOT NULL CONSTRAINT PERSON_PK PRIMARY KEY, "
-			+ "          first_name VARCHAR(64), " + "          last_name VARCHAR(64), "
-			+ "          picture_url VARCHAR(512), " + "          date_of_birth DATE, "
-			+ "          gender VARCHAR(1), " + "          street VARCHAR(64), " + "          city VARCHAR(64), "
-			+ "          country VARCHAR(2), " + "          phone VARCHAR(20), " + "          mobile VARCHAR(20), "
-			+ "          email VARCHAR(64), " + "          organization_id VARCHAR(64), "
-			+ "          position VARCHAR(512), " + "          phone_work VARCHAR(20), "
-			+ "          email_work VARCHAR(64), " + "          notes VARCHAR(1024), "
+			+ "          first_name VARCHAR(64),"
+			+ " " + "          last_name VARCHAR(64), "
+			+ "          picture_url VARCHAR(512),"
+			+ " " + "          date_of_birth DATE, "
+			+ "          gender VARCHAR(1),"
+			+ " " + "          street VARCHAR(64), " + "          city VARCHAR(64), "
+			+ "          country VARCHAR(2),"
+			+ " " + "          phone VARCHAR(20), " + "          mobile VARCHAR(20), "
+			+ "          email VARCHAR(64),"
+			+ " " + "          organization_id VARCHAR(64), "
+			+ "          position VARCHAR(512), "
+			+ "" + "          phone_work VARCHAR(20), "
+			+ "          email_work VARCHAR(64), "
+			+ "" + "          notes VARCHAR(1024), "
 			+ "          CONSTRAINT ORGANIZATION_FK FOREIGN KEY (organization_id) REFERENCES ORGANIZATION (organization_id)"
 			+ "         )";
 // end::createDB[]
@@ -45,10 +53,14 @@ public interface SQLs {
 			+ "         OR UPPER(last_name) LIKE UPPER('%'||:text||'%')) " + "</text>" + "<all> </all>";
 
 	// tag::lookupService[]
-	String ORGANIZATION_LOOKUP = "" + "SELECT   organization_id, " + "         name " + "FROM     ORGANIZATION "
-			+ "WHERE    1 = 1 " + "<key>    AND organization_id = :key</key> " // <1>
-			+ "<text>   AND UPPER(name) LIKE UPPER(:text||'%') </text> " // <2>
-			+ "<all></all>"; // <3>
+	String ORGANIZATION_LOOKUP = ""
+	+ "SELECT   organization_id, " 
+	+ "name "
+	+ "FROM     ORGANIZATION "
+	+ "WHERE    1 = 1 " 
+	+ "<key>    AND organization_id = :key</key> " 
+	+ "<text>   AND UPPER(name) LIKE UPPER(:text||'%') </text> "
+    + "<all></all>"; 
 	// end::lookupService[]
 
 	String AND_LIKE_CAUSE = "AND LOWER(%s) LIKE LOWER(:%s || '%%') ";
@@ -78,9 +90,17 @@ public interface SQLs {
 			+ "         city = addressBox.city, " + "         country = :addressBox.country, "
 			+ "         notes = :notesBox.notes " + "WHERE    organization_id = :organizationId";
 
-	String PERSON_PAGE_SELECT = "" + "SELECT   person_id, " + "         first_name, " + "         last_name, "
-			+ "         city, " + "         country, " + "         phone, " + "         mobile, " + "         email, "
-			+ "         organization_id " + "FROM     PERSON ";
+	String PERSON_PAGE_SELECT = "" 
+	        + "SELECT   person_id, "
+			+ "         first_name, "
+	        + "         last_name, "
+			+ "         city, "
+	        + "         country, "
+			+ "         phone, " 
+	        + "         mobile, "
+			+ "         email, "
+			+ "         organization_id "
+			+ "FROM     PERSON ";
 
 	String PERSON_PAGE_DATA_SELECT_INTO = "" + "INTO     :{page.personId}, " + "         :{page.firstName}, "
 			+ "         :{page.lastName}, " + "         :{page.city}, " + "         :{page.country}, "

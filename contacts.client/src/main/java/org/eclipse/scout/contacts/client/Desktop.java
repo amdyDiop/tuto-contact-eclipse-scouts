@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.scout.contacts.client.contact.ContactOutline;
+import org.eclipse.scout.contacts.client.organization.OrganizationForm;
 import org.eclipse.scout.contacts.client.person.PersonForm;
 import org.eclipse.scout.contacts.client.search.SearchOutline;
 import org.eclipse.scout.contacts.shared.Icons;
@@ -100,6 +101,26 @@ public class Desktop extends AbstractDesktop {
 	}
 
 	@Order(10)
+	public class OrganisationMenu extends AbstractMenu {
+		@Override
+		protected String getConfiguredText() {
+			return TEXTS.get("Organization");
+		}
+
+		@Override
+		protected Set<? extends IMenuType> getConfiguredMenuTypes() {
+			return CollectionUtility.hashSet();
+		}
+
+		@Override
+		protected void execAction() {
+			OrganizationForm form = new OrganizationForm();
+			form.startNew();
+
+		}
+	}
+
+	@Order(10)
 	public class NewPersonMenu extends AbstractMenu {
 		@Override
 		protected String getConfiguredText() {
@@ -110,11 +131,13 @@ public class Desktop extends AbstractDesktop {
 		protected Set<? extends IMenuType> getConfiguredMenuTypes() {
 			return CollectionUtility.hashSet();
 		}
+
 		@Override
 		protected void execAction() {
 			new PersonForm().start();
 		}
 	}
+
 	@Order(2000)
 	public class OptionsMenu extends AbstractMenu {
 		@Override

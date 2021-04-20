@@ -1,0 +1,21 @@
+package org.eclipse.scout.contacts.client.organization;
+
+import org.eclipse.scout.contacts.client.organization.OrganizationForm.MainBox.CancelButton;
+import org.eclipse.scout.contacts.client.organization.OrganizationForm.MainBox.GroupBox;
+import org.eclipse.scout.contacts.client.organization.OrganizationForm.MainBox.OkButton;
+import org.eclipse.scout.contacts.shared.organization.IOrganizationService;
+import org.eclipse.scout.contacts.shared.organization.OrganizationFormData;
+import org.eclipse.scout.rt.client.dto.FormData;
+import org.eclipse.scout.rt.client.ui.form.AbstractForm;
+import org.eclipse.scout.rt.client.ui.form.AbstractFormHandler;
+import org.eclipse.scout.rt.client.ui.form.fields.button.AbstractCancelButton;
+import org.eclipse.scout.rt.client.ui.form.fields.button.AbstractOkButton;
+import org.eclipse.scout.rt.client.ui.form.fields.groupbox.AbstractGroupBox;
+import org.eclipse.scout.rt.platform.BEANS;
+import org.eclipse.scout.rt.platform.Order;
+import org.eclipse.scout.rt.platform.text.TEXTS;
+
+@FormData(value = OrganizationFormData.class, sdkCommand = FormData.SdkCommand.CREATE)
+public class OrganizationForm extends AbstractForm {
+
+}

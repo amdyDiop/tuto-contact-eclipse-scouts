@@ -1,0 +1,29 @@
+public class OrganizationService implements IOrganizationService {
+  @Override
+  public OrganizationFormData create(OrganizationFormData formData) {
+    if (!ACCESS.check(new CreateOrganizationPermission())) {
+      throw new VetoException(TEXTS.get("InsufficientPrivileges"));
+    }
+    if (StringUtility.isNullOrEmpty(formData.getOrganizationId())) {
+      formData.setOrganizationId(UUID.randomUUID().toString());
+    }
+    SQL.insert(SQLs.ORGANIZATION_INSERT, formData);
+    return store(formData);
+  }
+  @Override
+  public OrganizationFormData load(OrganizationFormData formData) {
+    if (!ACCESS.check(new ReadOrganizationPermission())) {
+      throw new VetoException(TEXTS.get("InsufficientPrivileges"));
+    }
+    SQL.selectInto(SQLs.ORGANIZATION_SELECT, formData);
+    return formData;
+  }
+  @Override
+  public OrganizationFormData store(OrganizationFormData formData) {
+    if (!ACCESS.check(new UpdateOrganizationPermission())) {
+      throw new VetoException(TEXTS.get("InsufficientPrivileges"));
+    }
+    SQL.update(SQLs.ORGANIZATION_UPDATE, formData);
+    return formData;
+  }
+}

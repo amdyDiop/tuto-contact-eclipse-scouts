@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.eclipse.scout.contacts.client.common.CountryLookupCall;
 import org.eclipse.scout.contacts.client.person.PersonTablePage.Table;
+import org.eclipse.scout.contacts.shared.organization.OrganizationLookupCall;
 import org.eclipse.scout.contacts.shared.person.IPersonService;
 import org.eclipse.scout.contacts.shared.person.PersonTablePageData;
 import org.eclipse.scout.rt.client.dto.Data;
@@ -26,9 +27,19 @@ import org.eclipse.scout.rt.shared.services.lookup.ILookupCall;
 
 @Data(PersonTablePageData.class)
 public class PersonTablePage extends AbstractPageWithTable<Table> {
+	private String organizationId;
+
+	public String getOrganizationId() {
+		return organizationId;
+	}
+
+	public void setOrganizationId(String organizationId) {
+		this.organizationId = organizationId;
+	}
+
 	@Override
 	protected void execLoadData(SearchFilter filter) {
-		importPageData(BEANS.get(IPersonService.class).getPersonTableData(filter));
+		importPageData(BEANS.get(IPersonService.class).getPersonTableData(filter, getOrganizationId()));
 	}
 
 	@Override
@@ -221,20 +232,15 @@ public class PersonTablePage extends AbstractPageWithTable<Table> {
 		}
 
 		@Order(9)
-		public class OrganizationColumn extends AbstractStringColumn {
+		public class OrganizationColumn extends AbstractSmartColumn<String> {
 			@Override
 			protected String getConfiguredHeaderText() {
 				return TEXTS.get("Organization");
 			}
 
 			@Override
-			protected boolean getConfiguredVisible() {
-				return false;
-			}
-
-			@Override
-			protected int getConfiguredWidth() {
-				return 120;
+			protected Class<? extends ILookupCall<String>> getConfiguredLookupCall() {
+				return OrganizationLookupCall.class;
 			}
 		}
 
@@ -255,6 +261,7 @@ public class PersonTablePage extends AbstractPageWithTable<Table> {
 			}
 		}
 
+//----------------------------------- NEW MENU -----------------------------------------
 		@Order(2000)
 		public class NewMenu extends AbstractMenu {
 			@Override
@@ -270,6 +277,7 @@ public class PersonTablePage extends AbstractPageWithTable<Table> {
 			@Override
 			protected void execAction() {
 				PersonForm form = new PersonForm();
+				form.getOrganizationField().setValue(getOrganizationId());
 				form.addFormListener(new PersonFormListener());
 				// start the form using its new handler
 				form.startNew();
