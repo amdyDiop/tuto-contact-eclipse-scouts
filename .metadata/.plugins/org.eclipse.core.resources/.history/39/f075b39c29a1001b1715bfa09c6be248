@@ -1,0 +1,24 @@
+package org.eclipse.scout.contacts.client.common;
+
+import org.eclipse.scout.contacts.shared.common.AbstractAddressBoxData;
+import org.eclipse.scout.rt.client.dto.FormData;
+import org.eclipse.scout.rt.client.dto.FormData.DefaultSubtypeSdkCommand;
+import org.eclipse.scout.rt.client.dto.FormData.SdkCommand;
+import org.eclipse.scout.rt.client.ui.form.fields.groupbox.AbstractGroupBox;
+
+@FormData(value = AbstractAddressBoxData.class, sdkCommand = SdkCommand.CREATE, defaultSubtypeSdkCommand = DefaultSubtypeSdkCommand.CREATE)
+public class AbstractAddressBox extends AbstractGroupBox {
+
+	private String address;
+
+	@FormData
+	public String getAddress() {
+		return address;
+	}
+
+	@FormData
+	public void setAddress(String adresse) {
+		this.address = adresse;
+	}
+
+}

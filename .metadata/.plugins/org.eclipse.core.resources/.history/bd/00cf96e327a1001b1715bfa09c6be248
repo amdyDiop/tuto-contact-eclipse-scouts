@@ -1,0 +1,7 @@
+package org.eclipse.scout.contacts.shared.common;
+
+@FormData(value = AbstractAddressBoxData.class, sdkCommand = SdkCommand.CREATE, defaultSubtypeSdkCommand = DefaultSubtypeSdkCommand.CREATE)
+
+public class AbstractAddressBox {
+
+}

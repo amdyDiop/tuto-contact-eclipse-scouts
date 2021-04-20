@@ -68,14 +68,15 @@ public interface SQLs {
 	String ORGANIZATION_SELECT = "" + "SELECT   name, " + "         logo_url, " + "         url, " + "         phone, "
 			+ "         email, " + "         street, " + "         city, " + "         country, " + "         notes "
 			+ "FROM     ORGANIZATION " + "WHERE    organization_id = :organizationId " + "INTO     :name, "
-			+ "         :picture.url, " + "         :homepage, " + "         :phone, " + "         :email, "
-			+ "         :street , " + "         :city, " + "         :country, " + "         :notes";
+			+ "         :picture.url, " + "         :homepage, " + "         :phone, " + "         :email.email, "
+			+ "         :address.street , " + "         :addressBox.city, " + "         :addressBox.country, "
+			+ "         :notesBox.notes";
 
 	String ORGANIZATION_UPDATE = "" + "UPDATE   ORGANIZATION " + "SET      name = :name, "
 			+ "         logo_url = :picture.url, " + "         url = :homepage, " + "         phone = :phone, "
-			+ "         email = :email, " + "         street = :street, " + "         city = :city, "
-			+ "         country = :country, " + "         notes = :notes "
-			+ "WHERE    organization_id = :organizationId";
+			+ "         email = :email.email, " + "         street = :addressBox.street, "
+			+ "         city = addressBox.city, " + "         country = :addressBox.country, "
+			+ "         notes = :notesBox.notes " + "WHERE    organization_id = :organizationId";
 
 	String PERSON_PAGE_SELECT = "" + "SELECT   person_id, " + "         first_name, " + "         last_name, "
 			+ "         city, " + "         country, " + "         phone, " + "         mobile, " + "         email, "
@@ -94,17 +95,19 @@ public interface SQLs {
 			+ "         position, " + "         organization_id, " + "         phone_work, " + "         email_work, "
 			+ "         notes " + "FROM     PERSON " + "WHERE    person_id = :personId " + "INTO     :firstName, "
 			+ "         :lastName, " + "         :picture.url, " + "         :dateOfBirth, " + "         :genderGroup, "
-			+ "         :phone, " + "         :mobile, " + "         :email, " + "         :street, "
-			+ "         :city, " + "         :country, " + "         :position, " + "         :organization, "
-			+ "         :phoneWork, " + "         :emailWork, " + "         :notes";
+			+ "         :phone, " + "         :mobile, " + "         :email.email, " + "         :addressBox.street, "
+			+ "         :addressBox.city, " + "         :addressBox.country, " + "         :position, "
+			+ "         :organization, " + "         :phoneWork, " + "         :emailWork, "
+			+ "         :notesBox.notes";
 
 	String PERSON_UPDATE = "" + "UPDATE   PERSON " + "SET      first_name = :firstName, "
 			+ "         last_name = :lastName, " + "         picture_url = :picture.url, "
 			+ "         date_of_birth = :dateOfBirth, " + "         gender = :genderGroup, "
-			+ "         phone  = :phone, " + "         mobile = :mobile, " + "         email = :email, "
-			+ "         street = :street, " + "         city = :city, " + "         country = :country, "
-			+ "         position = :position, " + "         organization_id = :organization, "
-			+ "         phone_work = :phoneWork, " + "         email_work = :emailWork, " + "         notes = :notes "
+			+ "         phone  = :phone, " + "         mobile = :mobile, " + "         email = :email.email, "
+			+ "         street = :addressBox.street, " + "         city =:addressBox.city, "
+			+ "         country =:addressBox.country, " + "         position = :position, "
+			+ "         organization_id = :organization, " + "         phone_work = :phoneWork, "
+			+ "         email_work = :emailWork, " + "         notes = :notesBox.notes "
 			+ "WHERE    person_id = :personId";
 
 	String ORGANIZATION_INSERT_SAMPLE = "" + "INSERT   INTO ORGANIZATION " + "        (organization_id, "

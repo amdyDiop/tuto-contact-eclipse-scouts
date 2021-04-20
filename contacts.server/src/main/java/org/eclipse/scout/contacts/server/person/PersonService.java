@@ -40,10 +40,10 @@ public class PersonService implements IPersonService {
 		// }
 		// TODO [amdy] add business logic here.
 		if (StringUtility.isNullOrEmpty(formData.getPersonId())) {
-		      formData.setPersonId(UUID.randomUUID().toString());
-		    }
-		    SQL.insert(SQLs.PERSON_INSERT, formData); 
-		    return store(formData); 
+			formData.setPersonId(UUID.randomUUID().toString());
+		}
+		SQL.insert(SQLs.PERSON_INSERT, formData);
+		return store(formData);
 	}
 
 	@Override
@@ -51,16 +51,16 @@ public class PersonService implements IPersonService {
 		// if (!ACCESS.check(new ReadPersonPermission())) {
 		// throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		// }
-		 SQL.selectInto(SQLs.PERSON_SELECT, formData); 
-		    return formData;
-	    }
+		SQL.selectInto(SQLs.PERSON_SELECT, formData);
+		return formData;
+	}
 
 	@Override
 	public PersonFormData store(PersonFormData formData) {
 //		if (!ACCESS.check(new UpdatePersonPermission())) {
 //			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 //		}
-		SQL.update(SQLs.PERSON_UPDATE, formData); 
-	    return formData;
-	    }
+		SQL.update(SQLs.PERSON_UPDATE, formData);
+		return formData;
+	}
 }

@@ -1,0 +1,6 @@
+package org.eclipse.scout.contacts.shared.common;
+
+@FormData(value = AbstractUrlImageFieldData.class, sdkCommand = SdkCommand.CREATE, defaultSubtypeSdkCommand = DefaultSubtypeSdkCommand.CREATE)
+public class AbstractNotesBoxData extends AbstractGroupBox {
+
+}
